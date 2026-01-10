@@ -1,8 +1,10 @@
+import { useState } from "react";
 import LogoutButton from "./LogoutButton";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const location = useLocation();
+  const [open, setOpen] = useState(false);
 
   return (
     <nav className="bg-gray-900 border-b border-gray-800">
@@ -14,7 +16,7 @@ export default function Navbar() {
             Expense Tracker
           </h1>
 
-          <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
             <Link
               to="/dashboard"
               className={`text-sm font-medium ${
@@ -54,12 +56,60 @@ export default function Navbar() {
           </div>
         </div>
 
+        {/* Hamburger for mobile */}
+        <button
+          onClick={() => setOpen(!open)}
+          className="md:hidden text-gray-300 hover:text-white focus:outline-none"
+        >
+          ☰
+        </button>
+
         {/* Right: actions */}
-        <div className="flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-4">
           <LogoutButton />
         </div>
 
       </div>
+
+      {open && (
+        <div className="md:hidden border-t border-gray-800 bg-gray-900 px-4 py-4 space-y-3">
+          <Link
+            to="/dashboard"
+            onClick={() => setOpen(false)}
+            className="block text-gray-300 hover:text-white"
+          >
+            Dashboard
+          </Link>
+
+          <Link
+            to="/categories"
+            onClick={() => setOpen(false)}
+            className="block text-gray-300 hover:text-white"
+          >
+            Categories
+          </Link>
+
+          <Link
+            to="/expenses"
+            onClick={() => setOpen(false)}
+            className="block text-gray-300 hover:text-white"
+          >
+            Expenses
+          </Link>
+
+          <Link
+            to="/income"
+            onClick={() => setOpen(false)}
+            className="block text-gray-300 hover:text-white"
+          >
+            Income
+          </Link>
+
+          <div className="pt-3 border-t border-gray-800">
+            <LogoutButton />
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
