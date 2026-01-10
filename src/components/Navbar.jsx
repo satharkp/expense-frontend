@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LogoutButton from "./LogoutButton";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Navbar() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname]);
 
   return (
     <nav className="bg-gray-900 border-b border-gray-800">
@@ -27,11 +31,11 @@ export default function Navbar() {
             >
               Dashboard
             </Link>
-              <Link className={`text-sm font-medium ${
-                location.pathname === "/expenses"
-                  ? "text-sky-400"
-                  : "text-gray-300 hover:text-white"
-              }`} to="/categories">Categories</Link>
+            <Link className={`text-sm font-medium ${
+              location.pathname === "/categories"
+                ? "text-sky-400"
+                : "text-gray-300 hover:text-white"
+            }`} to="/categories">Categories</Link>
             <Link
               to="/expenses"
               className={`text-sm font-medium ${
@@ -58,10 +62,11 @@ export default function Navbar() {
 
         {/* Hamburger for mobile */}
         <button
+          aria-label="Toggle menu"
           onClick={() => setOpen(!open)}
-          className="md:hidden text-gray-300 hover:text-white focus:outline-none"
+          className="md:hidden text-gray-300 hover:text-white focus:outline-none transition"
         >
-          ☰
+          {open ? "✕" : "☰"}
         </button>
 
         {/* Right: actions */}
@@ -71,12 +76,20 @@ export default function Navbar() {
 
       </div>
 
-      {open && (
-        <div className="md:hidden border-t border-gray-800 bg-gray-900 px-4 py-4 space-y-3">
+      <div
+        className={`md:hidden border-t border-gray-800 bg-gray-900 px-4 overflow-hidden transition-all duration-300 ${
+          open ? "max-h-96 py-4 opacity-100" : "max-h-0 py-0 opacity-0"
+        }`}
+      >
+        <div className="space-y-1">
           <Link
             to="/dashboard"
             onClick={() => setOpen(false)}
-            className="block text-gray-300 hover:text-white"
+            className={`block rounded-lg px-3 py-2 text-sm transition ${
+              location.pathname === "/dashboard"
+                ? "bg-sky-600/20 text-sky-400"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
           >
             Dashboard
           </Link>
@@ -84,7 +97,11 @@ export default function Navbar() {
           <Link
             to="/categories"
             onClick={() => setOpen(false)}
-            className="block text-gray-300 hover:text-white"
+            className={`block rounded-lg px-3 py-2 text-sm transition ${
+              location.pathname === "/categories"
+                ? "bg-sky-600/20 text-sky-400"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
           >
             Categories
           </Link>
@@ -92,7 +109,11 @@ export default function Navbar() {
           <Link
             to="/expenses"
             onClick={() => setOpen(false)}
-            className="block text-gray-300 hover:text-white"
+            className={`block rounded-lg px-3 py-2 text-sm transition ${
+              location.pathname === "/expenses"
+                ? "bg-sky-600/20 text-sky-400"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
           >
             Expenses
           </Link>
@@ -100,16 +121,19 @@ export default function Navbar() {
           <Link
             to="/income"
             onClick={() => setOpen(false)}
-            className="block text-gray-300 hover:text-white"
+            className={`block rounded-lg px-3 py-2 text-sm transition ${
+              location.pathname === "/income"
+                ? "bg-sky-600/20 text-sky-400"
+                : "text-gray-300 hover:text-white hover:bg-gray-800"
+            }`}
           >
             Income
           </Link>
-
-          <div className="pt-3 border-t border-gray-800">
-            <LogoutButton />
-          </div>
         </div>
-      )}
+        <div className="pt-3 mt-3 border-t border-gray-800">
+          <LogoutButton />
+        </div>
+      </div>
     </nav>
   );
 }

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import TransactionForm from "../components/TransactionForm";
-import LogoutButton from "../components/LogoutButton";
 import Navbar from "../components/Navbar";
-import toast from "react-hot-toast";
 import IncomeExpenseChart from "../components/IncomeExpenseChart";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
@@ -14,6 +15,67 @@ export default function Dashboard() {
   const [netBalance, setNetBalance] = useState(null);
   const [incomeTotal, setIncomeTotal] = useState(0);
   const [expenseTotal, setExpenseTotal] = useState(0);
+
+  const exportCSV = () => {
+    if (!transactions.length) {
+      toast.error("No transactions to export");
+      return;
+    }
+
+    const headers = ["Date", "Type", "Category", "Amount", "Note"];
+
+    const rows = transactions.map(t => [
+      new Date(t.date).toLocaleDateString(),
+      t.type,
+      t.categoryId?.name || "-",
+      t.amount,
+      t.note || ""
+    ]);
+
+    const csv = [headers, ...rows]
+      .map(row => row.join(","))
+      .join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "transactions.csv";
+    a.click();
+
+    URL.revokeObjectURL(url);
+  };
+
+  const exportPDF = () => {
+    if (!transactions.length) {
+      toast.error("No transactions to export");
+      return;
+    }
+
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Transaction Report", 14, 15);
+
+    doc.setFontSize(10);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
+
+    doc.autoTable({
+      startY: 28,
+      head: [["Date", "Type", "Category", "Amount", "Note"]],
+      body: transactions.map(t => [
+        new Date(t.date).toLocaleDateString(),
+        t.type,
+        t.categoryId?.name || "-",
+        t.amount,
+        t.note || ""
+      ]),
+      styles: { fontSize: 9 },
+      headStyles: { fillColor: [56, 189, 248] }
+    });
+
+    doc.save("transactions.pdf");
+  };
 
   const loadExpenses = (filters = {}, pageNumber = 1) => {
     const params = new URLSearchParams();
@@ -110,7 +172,21 @@ export default function Dashboard() {
             }}
           />
         </div>
+        <div className="flex flex-col sm:flex-row justify-end gap-3 mb-4">
+          <button
+            onClick={exportCSV}
+            className="px-4 py-2 rounded-lg bg-sky-600 text-white text-sm hover:bg-sky-700 transition"
+          >
+            Export CSV
+          </button>
 
+          <button
+            onClick={exportPDF}
+            className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm hover:bg-emerald-700 transition"
+          >
+            Export PDF
+          </button>
+        </div>
 
         <h3 className="mt-6 mb-4 text-lg font-semibold text-sky-700">
           Recent Transactions
