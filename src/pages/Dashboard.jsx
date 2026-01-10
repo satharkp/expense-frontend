@@ -3,8 +3,6 @@ import api from "../api/axios";
 import TransactionForm from "../components/TransactionForm";
 import Navbar from "../components/Navbar";
 import IncomeExpenseChart from "../components/IncomeExpenseChart";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
 
 
 export default function Dashboard() {
@@ -45,36 +43,6 @@ export default function Dashboard() {
     a.click();
 
     URL.revokeObjectURL(url);
-  };
-
-  const exportPDF = () => {
-    if (!transactions.length) {
-      toast.error("No transactions to export");
-      return;
-    }
-
-    const doc = new jsPDF();
-    doc.setFontSize(16);
-    doc.text("Transaction Report", 14, 15);
-
-    doc.setFontSize(10);
-    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 22);
-
-    doc.autoTable({
-      startY: 28,
-      head: [["Date", "Type", "Category", "Amount", "Note"]],
-      body: transactions.map(t => [
-        new Date(t.date).toLocaleDateString(),
-        t.type,
-        t.categoryId?.name || "-",
-        t.amount,
-        t.note || ""
-      ]),
-      styles: { fontSize: 9 },
-      headStyles: { fillColor: [56, 189, 248] }
-    });
-
-    doc.save("transactions.pdf");
   };
 
   const loadExpenses = (filters = {}, pageNumber = 1) => {
@@ -178,13 +146,6 @@ export default function Dashboard() {
             className="px-4 py-2 rounded-lg bg-sky-600 text-white text-sm hover:bg-sky-700 transition"
           >
             Export CSV
-          </button>
-
-          <button
-            onClick={exportPDF}
-            className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm hover:bg-emerald-700 transition"
-          >
-            Export PDF
           </button>
         </div>
 
