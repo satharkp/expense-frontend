@@ -16,9 +16,12 @@ export default function Navbar() {
         
         {/* Left: App name + nav links */}
         <div className="flex items-center gap-8">
-          <h1 className="text-xl font-bold tracking-tight text-white">
+          <Link
+            to="/dashboard"
+            className="text-xl font-bold tracking-tight text-white hover:text-sky-400 transition"
+          >
             Expense Tracker
-          </h1>
+          </Link>
 
           <div className="hidden md:flex items-center gap-4">
             <Link
