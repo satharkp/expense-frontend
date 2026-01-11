@@ -61,7 +61,7 @@ export default function Categories() {
         {/* Add category */}
         <form
           onSubmit={createCategory}
-          className="bg-white rounded-2xl shadow-sm border border-sky-100 p-6 mb-10 flex flex-col md:flex-row gap-4 items-center"
+          className="bg-white rounded-xl shadow-sm border border-sky-100 p-6 mb-10 flex flex-col md:flex-row gap-4 items-center"
         >
           <input
             type="text"
@@ -89,7 +89,7 @@ export default function Categories() {
         {categories.map(cat => (
           <div
             key={cat._id}
-            className="bg-sky-50 p-5 rounded-2xl border border-sky-100 shadow-sm mb-4 flex justify-between items-center hover:shadow-md transition"
+            className="bg-sky-50 p-5 rounded-xl border border-sky-100 shadow-sm mb-4 flex justify-between items-center hover:shadow-md transition"
           >
             <div className="flex flex-col gap-1">
               <p className="font-medium text-slate-800">{cat.name}</p>
@@ -97,7 +97,7 @@ export default function Categories() {
 
             <button
               onClick={() => deleteCategory(cat._id)}
-              className="text-sm text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"
+              className="text-sm text-red-500 border border-red-200 px-3 py-1.5 rounded-xl hover:bg-red-500 hover:text-white transition"
             >
               Delete
             </button>
