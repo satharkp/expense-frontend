@@ -68,19 +68,19 @@ export default function Categories() {
             placeholder="Category name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full bg-sky-50 border border-sky-200 rounded-xl px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-white transition"
+            className="w-full bg-sky-50 border border-sky-200 rounded-lg px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-white transition"
           />
 
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full md:w-40 bg-sky-50 border border-sky-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-white transition"
+            className="w-full md:w-40 bg-sky-50 border border-sky-200 rounded-lg px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-white transition"
           >
             <option value="expense">Expense</option>
             <option value="income">Income</option>
           </select>
 
-          <button className="h-[46px] bg-sky-600 text-white px-6 rounded-xl hover:bg-sky-700 transition font-medium shadow-sm">
+          <button className="h-[46px] bg-sky-600 text-white px-6 rounded-lg hover:bg-sky-700 transition font-medium shadow-sm">
             Add
           </button>
         </form>
@@ -97,7 +97,7 @@ export default function Categories() {
 
             <button
               onClick={() => deleteCategory(cat._id)}
-              className="text-sm text-red-500 border border-red-200 px-3 py-1.5 rounded-xl hover:bg-red-500 hover:text-white transition"
+              className="text-sm text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"
             >
               Delete
             </button>
