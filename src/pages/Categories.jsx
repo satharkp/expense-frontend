@@ -109,7 +109,7 @@ export default function Categories() {
                 <input
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="bg-white border border-sky-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
+                  className="bg-white text-slate-800 border border-sky-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
                   autoFocus
                 />
                 <button className="text-sm text-sky-600 border border-sky-200 px-3 py-1.5 rounded-lg hover:bg-sky-50">
