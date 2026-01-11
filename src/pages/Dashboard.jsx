@@ -162,9 +162,16 @@ export default function Dashboard() {
             className="bg-sky-50 border border-sky-100 rounded-xl p-4 sm:p-5 mb-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
           >
             <div>
-              <p className="text-sm text-sky-600 font-medium">
-                {exp.categoryId?.name}
-              </p>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`h-2.5 w-2.5 rounded-full ${
+                    exp.type === "income" ? "bg-green-500" : "bg-red-500"
+                  }`}
+                />
+                <p className="text-sm text-sky-600 font-medium">
+                  {exp.categoryId?.name}
+                </p>
+              </div>
               <p className="text-xl font-semibold text-gray-900">
                 ₹ {exp.amount}
               </p>
