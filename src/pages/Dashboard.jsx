@@ -3,6 +3,7 @@ import api from "../api/axios";
 import TransactionForm from "../components/TransactionForm";
 import Navbar from "../components/Navbar";
 import IncomeExpenseChart from "../components/IncomeExpenseChart";
+import { toast } from "react-hot-toast";
 
 
 export default function Dashboard() {
@@ -71,7 +72,7 @@ export default function Dashboard() {
   };
 
   const deleteExpense = async (id) => {
-    const ok = window.confirm("Delete this expense?");
+    const ok = window.confirm("Delete this transaction?");
     if (!ok) return;
 
     try {
@@ -82,7 +83,7 @@ export default function Dashboard() {
       toast.error("Failed to delete transaction");
     }
   };
-
+  const [editingTransaction, setEditingTransaction] = useState(null);
   useEffect(() => {
     loadExpenses({}, 1);
     loadNetBalance();
@@ -134,9 +135,12 @@ export default function Dashboard() {
 
         <div className="bg-white rounded-xl p-4 sm:p-6 shadow-xl mb-8">
           <TransactionForm
+            editingTransaction={editingTransaction}
+            clearEdit={() => setEditingTransaction(null)}
             onSuccess={() => {
               loadExpenses({}, 1);
               loadNetBalance();
+              setEditingTransaction(null);
             }}
           />
         </div>
@@ -169,14 +173,31 @@ export default function Dashboard() {
                   {exp.note}
                 </p>
               )}
-            </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Added on {new Date(exp.createdAt).toLocaleString()}
+              </p>
 
-            <button
-              onClick={() => deleteExpense(exp._id)}
-              className="px-4 py-2 rounded-lg text-sm font-medium text-red-600 hover:text-white hover:bg-red-500 transition border border-red-100 w-full sm:w-auto"
-            >
-              Delete
-            </button>
+              {exp.updatedAt !== exp.createdAt && (
+                <p className="text-xs text-gray-400">
+                  Updated on {new Date(exp.updatedAt).toLocaleString()}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                onClick={() => setEditingTransaction(exp)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-sky-600 border border-sky-200 hover:bg-sky-50"
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() => deleteExpense(exp._id)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-red-600 hover:text-white hover:bg-red-500 transition border border-red-100"
+              >
+                Delete
+              </button>
+            </div>
           </div>
         ))}
 
