@@ -8,6 +8,7 @@ export default function Expenses() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
+  const [showFilters, setShowFilters] = useState(false);
 
   const loadExpenses = (filters = {}, pageNumber = 1) => {
     const params = new URLSearchParams();
@@ -53,13 +54,24 @@ if (filters.sort === "amountAsc") {
       <Navbar />
 
       <div className="w-full max-w-7xl mx-auto px-6 py-8">
-        <h2 className="text-2xl font-semibold text-red-700 mb-6">
-          Expenses
-        </h2>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-semibold text-red-700">
+            Expenses
+          </h2>
 
-        <div className="bg-white border border-sky-100 rounded-xl p-5 shadow-lg mb-8">
-          <ExpenseFilters onFilter={(filters) => loadExpenses(filters, 1)} />
+          <button
+            onClick={() => setShowFilters(prev => !prev)}
+            className="text-sm px-4 py-2 rounded-lg border border-blue-200 bg-white hover:bg-blue-50 transition"
+          >
+            {showFilters ? "Hide Filters" : "Show Filters"}
+          </button>
         </div>
+
+        {showFilters && (
+          <div className="bg-white border border-sky-100 rounded-xl p-5 shadow-lg mb-8">
+            <ExpenseFilters onFilter={(filters) => loadExpenses(filters, 1)} />
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {transactions.map(txn => (
