@@ -43,7 +43,7 @@ export default function Navbar() {
               to="/expenses"
               className={`text-sm font-medium ${
                 location.pathname === "/expenses"
-                  ? "text-sky-400"
+                  ? "text-red-400"
                   : "text-gray-300 hover:text-white"
               }`}
             >
