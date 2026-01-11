@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 
-export default function TransactionForm({ onSuccess }) {
+export default function TransactionForm({
+  onSuccess,
+  editingTransaction,
+  clearEdit
+}) {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [type, setType] = useState("expense");
   const [categories, setCategories] = useState([]);
+  const [date, setDate] = useState("");
 
   // load categories
   useEffect(() => {
@@ -19,6 +24,16 @@ export default function TransactionForm({ onSuccess }) {
     setCategoryId("");
   }, [type]);
 
+  useEffect(() => {
+    if (editingTransaction) {
+      setAmount(editingTransaction.amount);
+      setNote(editingTransaction.note || "");
+      setCategoryId(editingTransaction.categoryId?._id || "");
+      setType(editingTransaction.type);
+      setDate(editingTransaction.date?.slice(0, 10));
+    }
+  }, [editingTransaction]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -28,24 +43,36 @@ export default function TransactionForm({ onSuccess }) {
     }
 
     try {
-      await api.post("/transactions", {
-        amount: Number(amount),
-        categoryId,
-        type,
-        note
-      });
+      if (editingTransaction) {
+        await api.put(`/transactions/${editingTransaction._id}`, {
+          amount: Number(amount),
+          categoryId,
+          type,
+          note,
+          date
+        });
+      } else {
+        await api.post("/transactions", {
+          amount: Number(amount),
+          categoryId,
+          type,
+          note,
+          date
+        });
+      }
 
       // reset form
       setAmount("");
       setNote("");
       setCategoryId("");
       setType("expense");
+      setDate("");
+      if (clearEdit) clearEdit();
 
-      // refresh dashboard / lists
       if (onSuccess) onSuccess();
     } catch (err) {
       console.error(err);
-      alert("Failed to add transaction");
+      alert("Failed to save transaction");
     }
   };
 
@@ -55,7 +82,7 @@ export default function TransactionForm({ onSuccess }) {
       className="bg-white rounded-2xl border border-sky-100 shadow-sm p-6 space-y-5"
     >
       <h3 className="text-lg font-semibold text-sky-700">
-        Add Transaction
+        {editingTransaction ? "Edit Transaction" : "Add Transaction"}
       </h3>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
@@ -87,6 +114,18 @@ export default function TransactionForm({ onSuccess }) {
             <option value="expense">Expense</option>
             <option value="income">Income</option>
           </select>
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
+            Date
+          </label>
+          <input
+            type="date"
+            value={date}
+            onChange={e => setDate(e.target.value)}
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+          />
         </div>
 
         
@@ -127,7 +166,7 @@ export default function TransactionForm({ onSuccess }) {
           type="submit"
           className="bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition shadow-sm"
         >
-          Add Transaction
+          {editingTransaction ? "Update Transaction" : "Add Transaction"}
         </button>
       </div>
     </form>
