@@ -97,7 +97,7 @@ export default function TransactionForm({
             placeholder="₹ 0.00"
             value={amount}
             onChange={e => setAmount(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           />
         </div>
 
@@ -109,7 +109,7 @@ export default function TransactionForm({
           <select
             value={type}
             onChange={e => setType(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           >
             <option value="expense">Expense</option>
             <option value="income">Income</option>
@@ -124,7 +124,7 @@ export default function TransactionForm({
             type="date"
             value={date}
             onChange={e => setDate(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           />
         </div>
 
@@ -136,7 +136,7 @@ export default function TransactionForm({
           <select
             value={categoryId}
             onChange={e => setCategoryId(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           >
             <option value="">Select category</option>
             {categories.map(cat => (
@@ -156,7 +156,7 @@ export default function TransactionForm({
             placeholder="Optional note"
             value={note}
             onChange={e => setNote(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           />
         </div>
       </div>

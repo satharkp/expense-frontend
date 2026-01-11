@@ -51,7 +51,7 @@ export default function ExpenseFilters({ onFilter }) {
           <select
             value={categoryId}
             onChange={e => setCategoryId(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           >
             <option value="">All categories</option>
             {categories.map(cat => (
@@ -71,7 +71,7 @@ export default function ExpenseFilters({ onFilter }) {
             type="date"
             value={from}
             onChange={e => setFrom(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           />
         </div>
 
@@ -84,7 +84,7 @@ export default function ExpenseFilters({ onFilter }) {
             type="date"
             value={to}
             onChange={e => setTo(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           />
         </div>
 
@@ -96,7 +96,7 @@ export default function ExpenseFilters({ onFilter }) {
           <select
             value={sort}
             onChange={e => setSort(e.target.value)}
-            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
+            className="w-full px-4 py-2.5 rounded-lg border border-slate-200 bg-blue-100 text-sm focus:outline-none focus:ring-2 focus:ring-sky-200"
           >
             <option value="latest">Latest first</option>
             <option value="oldest">Oldest first</option>
