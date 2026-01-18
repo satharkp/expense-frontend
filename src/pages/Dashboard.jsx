@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import TransactionForm from "../components/TransactionForm";
-import Navbar from "../components/Navbar";
 import IncomeExpenseChart from "../components/IncomeExpenseChart";
 import { toast } from "react-hot-toast";
-
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
+import { ArrowDownCircle, ArrowUpCircle, Wallet, Edit, Trash2 } from "lucide-react";
+import { cn } from "../lib/utils";
 
 export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
@@ -14,6 +16,7 @@ export default function Dashboard() {
   const [netBalance, setNetBalance] = useState(null);
   const [incomeTotal, setIncomeTotal] = useState(0);
   const [expenseTotal, setExpenseTotal] = useState(0);
+  const [editingTransaction, setEditingTransaction] = useState(null);
 
   const exportCSV = () => {
     if (!transactions.length) {
@@ -22,7 +25,6 @@ export default function Dashboard() {
     }
 
     const headers = ["Date", "Type", "Category", "Amount", "Note"];
-
     const rows = transactions.map(t => [
       new Date(t.date).toLocaleDateString(),
       t.type,
@@ -37,21 +39,17 @@ export default function Dashboard() {
 
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = "transactions.csv";
     a.click();
-
     URL.revokeObjectURL(url);
   };
 
   const loadExpenses = (filters = {}, pageNumber = 1) => {
     const params = new URLSearchParams();
-
     params.append("page", pageNumber);
     params.append("limit", limit);
-
     if (filters.categoryId) params.append("categoryId", filters.categoryId);
     if (filters.from) params.append("from", filters.from);
     if (filters.to) params.append("to", filters.to);
@@ -74,160 +72,127 @@ export default function Dashboard() {
   const deleteExpense = async (id) => {
     const ok = window.confirm("Delete this transaction?");
     if (!ok) return;
-
     try {
       await api.delete(`/transactions/${id}`);
       toast.success("Transaction deleted");
       loadExpenses({}, page);
+      loadNetBalance(); // Update balance too
     } catch (error) {
       toast.error("Failed to delete transaction");
     }
   };
-  const [editingTransaction, setEditingTransaction] = useState(null);
+
   useEffect(() => {
     loadExpenses({}, 1);
     loadNetBalance();
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-100 text-gray-800">
-      <Navbar />
+    <div className="space-y-8">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <h2 className="text-3xl font-bold tracking-tight text-primary">Dashboard</h2>
+        <Button onClick={exportCSV} variant="outline" className="w-full sm:w-auto">
+          Export CSV
+        </Button>
+      </div>
 
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-neutral-600">Total Income</CardTitle>
+            <ArrowUpCircle className="h-5 w-5 text-success" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-success">₹ {incomeTotal}</div>
+          </CardContent>
+        </Card>
 
-        <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-sky-700">
-          Dashboard
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
-            <p className="text-sm text-gray-500">Income</p>
-            <p className="text-2xl font-semibold text-green-600">
-              ₹ {incomeTotal}
-            </p>
-          </div>
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-neutral-600">Total Expense</CardTitle>
+            <ArrowDownCircle className="h-5 w-5 text-danger" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-danger">₹ {expenseTotal}</div>
+          </CardContent>
+        </Card>
 
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md">
-            <p className="text-sm text-gray-500">Expense</p>
-            <p className="text-2xl font-semibold text-red-500">
-              ₹ {expenseTotal}
-            </p>
-          </div>
-
-          <div className="bg-white rounded-xl p-4 sm:p-6 shadow-md border border-sky-100">
-            <p className="text-sm text-gray-500">Net Balance</p>
-            <p
-              className={`text-2xl font-semibold ${
-                netBalance >= 0 ? "text-sky-600" : "text-red-600"
-              }`}
-            >
+        <Card className="hover:shadow-md transition-shadow">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-neutral-600">Net Balance</CardTitle>
+            <Wallet className="h-5 w-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className={cn("text-2xl font-bold", netBalance >= 0 ? "text-primary" : "text-danger")}>
               ₹ {netBalance}
-            </p>
-          </div>
-        </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-        {/* Income vs Expense Chart */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-8">
-          <IncomeExpenseChart
-            income={incomeTotal}
-            expense={expenseTotal}
-          />
-        </div>
+      <div className="space-y-8">
+        <TransactionForm
+          editingTransaction={editingTransaction}
+          clearEdit={() => setEditingTransaction(null)}
+          onSuccess={() => {
+            loadExpenses({}, 1);
+            loadNetBalance();
+            setEditingTransaction(null);
+          }}
+        />
 
-        <div className="bg-white rounded-xl p-4 sm:p-6 shadow-xl mb-8">
-          <TransactionForm
-            editingTransaction={editingTransaction}
-            clearEdit={() => setEditingTransaction(null)}
-            onSuccess={() => {
-              loadExpenses({}, 1);
-              loadNetBalance();
-              setEditingTransaction(null);
-            }}
-          />
-        </div>
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mb-4">
-          <button
-            onClick={exportCSV}
-            className="px-4 py-2 rounded-lg bg-sky-600 text-white text-sm hover:bg-sky-700 transition"
-          >
-            Export CSV
-          </button>
-        </div>
-
-        <h3 className="mt-6 mb-4 text-lg font-semibold text-sky-700">
-          Recent Transactions
-        </h3>
-        {transactions.map(exp => (
-          <div
-            key={exp._id}
-            className="bg-sky-50 border border-sky-100 rounded-xl p-4 sm:p-5 mb-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
-          >
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-7">
+          <div className="lg:col-span-4">
             <div>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`h-2.5 w-2.5 rounded-full ${
-                    exp.type === "income" ? "bg-green-500" : "bg-red-500"
-                  }`}
-                />
-                <p className="text-sm text-sky-600 font-medium">
-                  {exp.categoryId?.name}
-                </p>
+              <h3 className="mb-4 text-xl font-semibold text-primary">Recent Transactions</h3>
+              <div className="space-y-4">
+                {transactions.map(exp => (
+                  <div key={exp._id} className="flex flex-col sm:flex-row sm:items-center justify-between rounded-xl border border-neutral-200 bg-white p-4 shadow-sm hover:shadow-md transition-all gap-4">
+                    <div className="flex items-center gap-4">
+                      <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-full", exp.type === 'income' ? "bg-success-50 text-success" : "bg-danger-50 text-danger")}>
+                        {exp.type === 'income' ? <ArrowUpCircle className="h-6 w-6" /> : <ArrowDownCircle className="h-6 w-6" />}
+                      </div>
+                      <div>
+                        <p className="font-semibold text-neutral-900 text-lg">{exp.categoryId?.name || "Uncategorized"}</p>
+                        <p className="text-sm text-neutral-500">{new Date(exp.createdAt).toLocaleDateString()}</p>
+                        {exp.note && <p className="text-xs text-neutral-400 mt-0.5 line-clamp-1">{exp.note}</p>}
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto">
+                      <span className={cn("font-bold text-lg whitespace-nowrap", exp.type === 'income' ? "text-success" : "text-danger")}>
+                        {exp.type === 'income' ? "+" : "-"} ₹ {exp.amount}
+                      </span>
+                      <div className="flex gap-2 shrink-0">
+                        <Button size="icon" variant="outline" className="h-8 w-8 border-indigo-100 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200 shadow-sm transition-colors" onClick={() => setEditingTransaction(exp)}>
+                          <Edit size={16} className="text-indigo-600" strokeWidth={2.5} />
+                        </Button>
+                        <Button size="icon" variant="outline" className="h-8 w-8 border-red-100 bg-red-50 hover:bg-red-100 hover:border-red-200 shadow-sm transition-colors" onClick={() => deleteExpense(exp._id)}>
+                          <Trash2 size={16} className="text-red-600" strokeWidth={2.5} />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <p className="text-xl font-semibold text-gray-900">
-                ₹ {exp.amount}
-              </p>
-              {exp.note && (
-                <p className="text-sm text-gray-500">
-                  {exp.note}
-                </p>
-              )}
-              <p className="text-xs text-gray-400 mt-1">
-                Added on {new Date(exp.createdAt).toLocaleString()}
-              </p>
 
-              {exp.updatedAt !== exp.createdAt && (
-                <p className="text-xs text-gray-400">
-                  Updated on {new Date(exp.updatedAt).toLocaleString()}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col sm:flex-row gap-2">
-              <button
-                onClick={() => setEditingTransaction(exp)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-sky-600 border border-sky-200 hover:bg-sky-50"
-              >
-                Edit
-              </button>
-
-              <button
-                onClick={() => deleteExpense(exp._id)}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-red-600 hover:text-white hover:bg-red-500 transition border border-red-100"
-              >
-                Delete
-              </button>
+              {/* Pagination */}
+              <div className="mt-6 flex items-center justify-center gap-4">
+                <Button variant="outline" size="sm" onClick={() => loadExpenses({}, page - 1)} disabled={page === 1}>
+                  Prev
+                </Button>
+                <span className="text-sm font-medium text-neutral-600">
+                  Page {page} of {totalPages}
+                </span>
+                <Button variant="outline" size="sm" onClick={() => loadExpenses({}, page + 1)} disabled={page === totalPages}>
+                  Next
+                </Button>
+              </div>
             </div>
           </div>
-        ))}
 
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button
-            className="px-4 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-40"
-            disabled={page === 1}
-            onClick={() => loadExpenses({}, page - 1)}
-          >
-            Prev
-          </button>
-
-          <span className="text-sm text-gray-600">
-            Page {page} of {totalPages}
-          </span>
-
-          <button
-            className="px-4 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-40"
-            disabled={page === totalPages}
-            onClick={() => loadExpenses({}, page + 1)}
-          >
-            Next
-          </button>
+          <div className="lg:col-span-3">
+            <IncomeExpenseChart income={incomeTotal} expense={expenseTotal} />
+          </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import Navbar from "../components/Navbar";
 import toast from "react-hot-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Edit, Trash2, Plus, Save, X } from "lucide-react";
 
 export default function Categories() {
   const [name, setName] = useState("");
@@ -72,73 +75,81 @@ export default function Categories() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 to-white">
-      <Navbar />
+    <div className="space-y-6">
+      <h2 className="text-3xl font-bold tracking-tight text-primary">Categories</h2>
 
-      <div className="max-w-5xl mx-auto px-6 py-8">
-        <h2 className="text-2xl font-semibold text-sky-700 mb-6">
-          Categories
-        </h2>
-
-        {/* Add category */}
-        <form
-          onSubmit={createCategory}
-          className="bg-white rounded-xl shadow-sm border border-sky-100 p-6 mb-10 flex flex-col sm:flex-row gap-4 items-center"
-        >
-          <input
-            type="text"
-            placeholder="Category name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full bg-sky-50 border border-sky-200 rounded-lg px-4 py-3 text-sm text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:bg-white transition"
-          />
-
-          <button className="h-[46px] bg-sky-600 text-white px-6 rounded-lg hover:bg-sky-700 transition font-medium shadow-sm">
-            Add
-          </button>
-        </form>
-
-        {/* Category list */}
-        {categories.map(cat => (
-          <div
-            key={cat._id}
-            className="bg-sky-50 p-5 rounded-xl border border-sky-100 shadow-sm mb-4 flex justify-between items-center hover:shadow-md transition"
+      {/* Add category */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Add New Category</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form
+            onSubmit={createCategory}
+            className="flex flex-col gap-4 sm:flex-row"
           >
-            {editingCategory?._id === cat._id ? (
-              <form onSubmit={updateCategory} className="flex gap-2">
-                <input
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  className="bg-white text-slate-800 border border-sky-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400"
-                  autoFocus
-                />
-                <button className="text-sm text-sky-600 border border-sky-200 px-3 py-1.5 rounded-lg hover:bg-sky-50">
-                  Save
-                </button>
-              </form>
-            ) : (
-              <p className="font-medium text-slate-800">{cat.name}</p>
-            )}
+            <Input
+              type="text"
+              placeholder="Category name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="flex-1"
+            />
+            <Button type="submit">
+              <Plus className="mr-2 h-4 w-4" /> Add Category
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
 
-            <div className="flex gap-2">
-              <button
-                onClick={() => {
-                  setEditingCategory(cat);
-                  setEditName(cat.name);
-                }}
-                className="text-sm text-sky-600 border border-sky-200 px-3 py-1.5 rounded-lg hover:bg-sky-50 transition"
-              >
-                Edit
-              </button>
-
-              <button
-                onClick={() => deleteCategory(cat._id)}
-                className="text-sm text-red-500 border border-red-200 px-3 py-1.5 rounded-lg hover:bg-red-500 hover:text-white transition"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
+      {/* Category list */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {categories.map(cat => (
+          <Card key={cat._id} className="hover:shadow-md transition-shadow">
+            <CardContent className="p-4 flex items-center justify-between">
+              {editingCategory?._id === cat._id ? (
+                <form onSubmit={updateCategory} className="flex flex-1 items-center gap-2">
+                  <Input
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                    className="h-9"
+                    autoFocus
+                  />
+                  <Button size="sm" type="submit">
+                    <Save className="h-4 w-4" />
+                  </Button>
+                  <Button size="sm" variant="ghost" type="button" onClick={() => setEditingCategory(null)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </form>
+              ) : (
+                <>
+                  <p className="font-medium text-neutral-900">{cat.name}</p>
+                  <div className="flex gap-2">
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="h-8 w-8 border-indigo-100 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200 shadow-sm transition-colors"
+                      onClick={() => {
+                        setEditingCategory(cat);
+                        setEditName(cat.name);
+                      }}
+                    >
+                      <Edit size={16} className="text-indigo-600" strokeWidth={2.5} />
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="h-8 w-8 border-red-100 bg-red-50 hover:bg-red-100 hover:border-red-200 shadow-sm transition-colors"
+                      onClick={() => deleteCategory(cat._id)}
+                    >
+                      <Trash2 size={16} className="text-red-600" strokeWidth={2.5} />
+                    </Button>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
         ))}
       </div>
     </div>

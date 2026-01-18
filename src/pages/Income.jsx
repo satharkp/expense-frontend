@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
-import Navbar from "../components/Navbar";
 import ExpenseFilters from "../components/ExpenseFilters";
+import { Card, CardContent } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
+import { ArrowUpCircle } from "lucide-react";
 
 export default function Income() {
   const [transactions, setTransactions] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const limit = 10;
-
   const [showFilters, setShowFilters] = useState(false);
 
   const loadIncome = (filters = {}, pageNumber = 1) => {
     const params = new URLSearchParams();
     params.append("page", pageNumber);
     params.append("limit", limit);
-    params.append("type", "income"); // 👈 IMPORTANT
+    params.append("type", "income");
 
     if (filters.categoryId) params.append("categoryId", filters.categoryId);
     if (filters.from) params.append("from", filters.from);
@@ -39,7 +40,7 @@ export default function Income() {
     }
 
     api.get(`/transactions?${params.toString()}`).then(res => {
-      setTransactions(res.data.expenses);
+      setTransactions(res.data.expenses); // API returns 'expenses' key even for income
       setPage(res.data.page);
       setTotalPages(res.data.totalPages);
     });
@@ -50,78 +51,53 @@ export default function Income() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-100 text-gray-800">
-      <Navbar />
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-3xl font-bold tracking-tight text-success">Income</h2>
+        <Button
+          variant="outline"
+          onClick={() => setShowFilters(prev => !prev)}
+        >
+          {showFilters ? "Hide Filters" : "Show Filters"}
+        </Button>
+      </div>
 
-      <div className="w-full max-w-7xl mx-auto px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-green-700">
-            Income
-          </h2>
+      {showFilters && (
+        <ExpenseFilters onFilter={(filters) => loadIncome(filters, 1)} />
+      )}
 
-          <button
-            onClick={() => setShowFilters(prev => !prev)}
-            className="text-sm px-4 py-2 rounded-lg border border-blue-200 bg-white hover:bg-blue-50 transition"
-          >
-            {showFilters ? "Hide Filters" : "Show Filters"}
-          </button>
-        </div>
-
-        {showFilters && (
-          <div className="bg-white border border-sky-100 rounded-xl p-5 shadow-lg mb-8">
-            <ExpenseFilters onFilter={(filters) => loadIncome(filters, 1)} />
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {transactions.map(txn => (
-            <div
-              key={txn._id}
-              className="bg-white border border-green-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition flex items-center justify-between"
-            >
-              <div className="flex items-start gap-4">
-                <div className="w-1 rounded-full bg-green-400 mt-1" />
-                <div className="space-y-1">
-                  <p className="text-xs uppercase tracking-wide text-green-500 font-semibold">
-                    {txn.categoryId?.name}
-                  </p>
-
-                  <p className="text-2xl font-bold text-gray-900">
-                    ₹ {txn.amount}
-                  </p>
-
-                  {txn.note && (
-                    <p className="text-sm text-gray-500">
-                      {txn.note}
-                    </p>
-                  )}
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {transactions.map(txn => (
+          <Card key={txn._id} className="hover:shadow-md transition-shadow">
+            <CardContent className="p-6 flex items-start gap-4">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-success-50 text-success">
+                <ArrowUpCircle className="h-6 w-6" />
               </div>
-            </div>
-          ))}
-        </div>
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-neutral-500">{txn.categoryId?.name}</p>
+                  <p className="text-xs text-neutral-400">{new Date(txn.createdAt).toLocaleDateString()}</p>
+                </div>
+                <p className="text-2xl font-bold text-neutral-900">₹ {txn.amount}</p>
+                {txn.note && (
+                  <p className="text-sm text-neutral-600 line-clamp-2">{txn.note}</p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
 
-        <div className="mt-8 flex justify-center items-center gap-4">
-          <button
-            className="px-4 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-40"
-            disabled={page === 1}
-            onClick={() => loadIncome({}, page - 1)}
-          >
-            Prev
-          </button>
-
-          <span className="text-sm text-gray-600">
-            Page {page} of {totalPages}
-          </span>
-
-          <button
-            className="px-4 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-40"
-            disabled={page === totalPages}
-            onClick={() => loadIncome({}, page + 1)}
-          >
-            Next
-          </button>
-        </div>
+      <div className="flex justify-center gap-2 mt-8">
+        <Button variant="outline" onClick={() => loadIncome({}, page - 1)} disabled={page === 1}>
+          Prev
+        </Button>
+        <span className="flex items-center text-sm text-neutral-600">
+          Page {page} of {totalPages}
+        </span>
+        <Button variant="outline" onClick={() => loadIncome({}, page + 1)} disabled={page === totalPages}>
+          Next
+        </Button>
       </div>
     </div>
   );
