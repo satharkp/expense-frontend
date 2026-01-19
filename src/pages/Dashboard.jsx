@@ -162,14 +162,27 @@ export default function Dashboard() {
                       <span className={cn("font-bold text-lg whitespace-nowrap", exp.type === 'income' ? "text-success" : "text-danger")}>
                         {exp.type === 'income' ? "+" : "-"} ₹ {exp.amount}
                       </span>
+
                       <div className="flex gap-2 shrink-0">
-                        <Button size="icon" variant="outline" className="h-8 w-8 border-indigo-100 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200 shadow-sm transition-colors" onClick={() => setEditingTransaction(exp)}>
-                          <Edit size={16} className="text-indigo-600" strokeWidth={2.5} />
+                        <Button
+                          onClick={() => setEditingTransaction(exp)}
+                          aria-label="Edit transaction"
+                          title="Edit transaction"
+                          className="flex h-9 w-6 flex-col items-center border-red-250 bg-indigo-200 hover:bg-indigo-500 hover:border-indigo-300 shadow-sm transition-colors"
+                          >
+                      <Edit size={14} className="text-gray-600 hover:text-white" strokeWidth={2.5} />
+
                         </Button>
-                        <Button size="icon" variant="outline" className="h-8 w-8 border-red-100 bg-red-50 hover:bg-red-100 hover:border-red-200 shadow-sm transition-colors" onClick={() => deleteExpense(exp._id)}>
-                          <Trash2 size={16} className="text-red-600" strokeWidth={2.5} />
+                        <Button
+                          onClick={() => deleteExpense(exp._id)}
+                          aria-label="Delete transaction"
+                          title="Delete transaction"
+                          className="flex h-9 w-9 flex-col items-center border-red-250 bg-red-200 hover:bg-red-500 hover:border-red-200 shadow-sm transition-colors"
+                    >
+                      <Trash2 size={16} className="text-gray-600 hover:text-white" strokeWidth={2.5} />
                         </Button>
                       </div>
+                      
                     </div>
                   </div>
                 ))}

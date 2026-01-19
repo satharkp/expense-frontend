@@ -10,7 +10,7 @@ export default function LogoutButton({ className, icon, children }) {
   return (
     <button
       onClick={handleLogout}
-      className={cn("flex items-center gap-2 text-sm font-medium text-neutral-600 hover:text-neutral-900 transition-colors", className)}
+      className={cn("flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors", className)}
     >
       {icon || <LogOut className="h-4 w-4" />}
       {children || "Logout"}

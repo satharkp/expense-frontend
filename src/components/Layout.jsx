@@ -44,7 +44,7 @@ export default function Layout({ children }) {
       {/* Sidebar for Desktop */}
       <aside className="hidden w-64 flex-col border-r border-neutral-200 bg-white lg:flex sticky top-0 h-screen overflow-y-auto">
         <div className="flex h-16 items-center px-6 shrink-0">
-          <Link to="/" className="flex items-center gap-2 font-bold text-xl text-primary">
+          <Link to="/dashboard" className="flex items-center gap-2 font-bold text-xl text-primary">
             <Wallet className="h-6 w-6" />
             <span>FinTrack</span>
           </Link>
@@ -59,7 +59,7 @@ export default function Layout({ children }) {
           ))}
         </div>
         <div className="p-4 border-t border-neutral-100 shrink-0">
-          <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-danger hover:bg-red-50 hover:text-red-700 transition-colors cursor-pointer">
+          <div className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors cursor-pointer">
             <LogoutButton customClass="w-full flex items-center gap-3 text-inherit hover:text-inherit" icon={<LogOut className="h-5 w-5" />} />
           </div>
         </div>
@@ -68,7 +68,7 @@ export default function Layout({ children }) {
       {/* Mobile Header */}
       <div className="lg:hidden">
         <div className="flex h-16 items-center justify-between border-b border-neutral-200 bg-white px-4">
-          <Link to="/" className="flex items-center gap-2 font-bold text-lg text-primary">
+          <Link to="/dashboard" className="flex items-center gap-2 font-bold text-lg text-primary">
             <Wallet className="h-5 w-5" />
             <span>FinTrack</span>
           </Link>
@@ -91,7 +91,7 @@ export default function Layout({ children }) {
                 onClick={() => setIsMobileMenuOpen(false)}
               />
             ))}
-            <div className="pt-3 mt-3 border-t border-neutral-100 text-danger hover:text-red-700 font-medium">
+            <div className="pt-3 mt-3 border-t border-neutral-100 font-medium">
               <LogoutButton customClass="flex items-center gap-3 text-inherit hover:text-inherit" icon={<LogOut className="h-5 w-5" />} />
             </div>
           </div>

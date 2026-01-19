@@ -125,26 +125,26 @@ export default function Categories() {
               ) : (
                 <>
                   <p className="font-medium text-neutral-900">{cat.name}</p>
-                  <div className="flex gap-2">
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-8 w-8 border-indigo-100 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-200 shadow-sm transition-colors"
+                  <div className="flex gap-2 ">
+                    <button
                       onClick={() => {
                         setEditingCategory(cat);
                         setEditName(cat.name);
                       }}
+                      title="Edit category"
+                      className="flex h-9 w-9 flex-col items-center border-red-250 bg-indigo-200 hover:bg-indigo-500 hover:border-indigo-300 shadow-sm transition-colors"
                     >
-                      <Edit size={16} className="text-indigo-600" strokeWidth={2.5} />
-                    </Button>
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="h-8 w-8 border-red-100 bg-red-50 hover:bg-red-100 hover:border-red-200 shadow-sm transition-colors"
+                      <Edit size={14} className="text-gray-600 hover:text-white" strokeWidth={2.5} />
+                      
+                    </button>
+                    <button
                       onClick={() => deleteCategory(cat._id)}
+                      title="Delete category"
+                      className="flex h-9 w-9 flex-col items-center border-red-250 bg-red-200 hover:bg-red-500 hover:border-red-200 shadow-sm transition-colors "
                     >
-                      <Trash2 size={16} className="text-red-600" strokeWidth={2.5} />
-                    </Button>
+                      <Trash2 size={16} className="text-gray-600 hover:text-white" strokeWidth={2.5} />
+                      
+                    </button>
                   </div>
                 </>
               )}
