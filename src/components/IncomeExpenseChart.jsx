@@ -18,7 +18,7 @@ export default function IncomeExpenseChart({ income, expense }) {
   return (
     <Card className="h-[350px] mt-10">
       <CardHeader>
-        <CardTitle>Income & Expense Chart</CardTitle>
+        <CardTitle>INCOME & EXPENSE CHART</CardTitle>
       </CardHeader>
       <CardContent>
         {income === 0 && expense === 0 ? (
